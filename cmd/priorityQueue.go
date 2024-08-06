@@ -1,8 +1,9 @@
 package cmd
 
 type Node struct {
-	Data  string
-	Count int
+	Data        string
+	Count       int
+	Left, Right *Node
 }
 
 type PriorityQueue struct {
@@ -13,14 +14,13 @@ func (p *PriorityQueue) Insert(value Node) {
 	p.queueArray = append(p.queueArray, value)
 	lastIdx := len(p.queueArray) - 1
 	p.heapifyUp(lastIdx)
+
 }
 
 func (p *PriorityQueue) Pop() *Node {
-
 	if len(p.queueArray) == 0 {
 		return nil
 	}
-
 	lastIdx := len(p.queueArray) - 1
 	p.swap(0, lastIdx)
 	value := p.queueArray[lastIdx]
@@ -33,8 +33,8 @@ func (p *PriorityQueue) PQ() []Node {
 	return p.queueArray
 }
 
-func (p *PriorityQueue) Peek() Node {
-	return p.queueArray[0]
+func (p *PriorityQueue) Peek() *Node {
+	return &p.queueArray[0]
 }
 
 func (p *PriorityQueue) leftNode(index int) int {
@@ -75,7 +75,7 @@ func (p *PriorityQueue) heapifyDown(index int) {
 	leftIndex := p.leftNode(index)
 	rightIndex := p.rightNode(index)
 
-	if index >= len(p.queueArray) || leftIndex >= len(p.queueArray) || rightIndex >= len(p.queueArray) {
+	if index >= len(p.queueArray)-1 || leftIndex >= len(p.queueArray)-1 {
 		return
 	}
 	currentValue := p.queueArray[index]

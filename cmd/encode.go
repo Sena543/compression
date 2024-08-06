@@ -1,11 +1,11 @@
 package cmd
 
-import "fmt"
+import (
+	"fmt"
+	"io"
+)
 
-type HuffmanNode struct {
-	NodeData    Node
-	Left, Right *HuffmanNode
-}
+type HuffNode = Node
 
 func NewEncode(input string) map[string]int {
 	var result = make(map[string]int)
@@ -15,57 +15,32 @@ func NewEncode(input string) map[string]int {
 	return result
 }
 
-var rootNode *HuffmanNode
+func (h *HuffNode) BuildTree(pq PriorityQueue) *HuffNode {
 
-func (h *HuffmanNode) HuffTree(pq PriorityQueue) {
-	/* fmt.Println(pq.PQ()) */
-	pqLen := len(pq.queueArray)
-	for i := 1; i < pqLen; i++ {
-		fmt.Println(i)
-		nodeValue := pq.Pop()
-		h.Insert(nodeValue)
-	}
-	h.Traverse(rootNode)
-}
+	for len(pq.queueArray) > 1 {
+		left := pq.Pop()
+		right := pq.Pop()
 
-func (h *HuffmanNode) Insert(newNode *Node) {
-
-	if rootNode == nil {
-		rootNode = &HuffmanNode{NodeData: *newNode}
-		return
-	}
-	currNode := rootNode
-	newHuffNode := &HuffmanNode{NodeData: *newNode}
-
-	for currNode != nil {
-		if currNode.NodeData.Count > newHuffNode.NodeData.Count { //go left
-			if currNode.Left == nil {
-				currNode.Left = newHuffNode
-				/* return */
-				break
-			} else {
-				fmt.Println(5)
-				currNode = currNode.Left
-			}
-
-		} else { //go right
-			if currNode.Right == nil {
-				currNode.Right = newHuffNode
-				/* return */
-				break
-			} else {
-				currNode = currNode.Right
-			}
+		newNode := Node{
+			Count: left.Count + right.Count,
+			Left:  left,
+			Right: right,
 		}
-	}
 
+		pq.Insert(newNode)
+	}
+	return pq.Peek()
 }
 
-func (h *HuffmanNode) Traverse(node *HuffmanNode) {
+// Helper function to print the tree
+func (h *HuffNode) PrintTree(node *HuffNode, writer io.Writer) {
 	if node == nil {
 		return
 	}
-	h.Traverse(node.Left)
-	fmt.Println(node.NodeData)
-	h.Traverse(node.Right)
+
+	h.PrintTree(node.Left, writer)
+	if node.Left == nil && node.Right == nil {
+		fmt.Fprintf(writer, "%s : %d \n", node.Data, node.Count)
+	}
+	h.PrintTree(node.Right, writer)
 }

@@ -1,9 +1,9 @@
 package cmd
 
 type Node struct {
-	Data        string
-	Count       int
-	Left, Right *Node
+	Data          string
+	Count, Weight int
+	Left, Right   *Node
 }
 
 type PriorityQueue struct {

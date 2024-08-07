@@ -19,6 +19,7 @@ func main() {
 	var hTree cmd.HuffNode
 	rootNode := hTree.BuildTree(pq)
 	/* rootNode := hTree.BuildTree(pq.PQ(), 0) */
+	hTree.AssignWeights(rootNode)
 	hTree.PrintTree(rootNode, os.Stdout)
 
 }

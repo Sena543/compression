@@ -39,8 +39,24 @@ func (h *HuffNode) PrintTree(node *HuffNode, writer io.Writer) {
 	}
 
 	h.PrintTree(node.Left, writer)
-	if node.Left == nil && node.Right == nil {
-		fmt.Fprintf(writer, "%s : %d \n", node.Data, node.Count)
-	}
+	/* if node.Left == nil && node.Right == nil { */
+	fmt.Fprintf(writer, "%s : %d : %d \n", node.Data, node.Count, node.Weight)
+	/* } */
 	h.PrintTree(node.Right, writer)
+}
+
+func (h *HuffNode) AssignWeights(node *HuffNode) {
+	if node == nil {
+		return
+	}
+
+	if node.Left != nil {
+		node.Weight = 0
+		h.AssignWeights(node.Left)
+	}
+
+	if node.Right != nil {
+		node.Weight = 1
+		h.AssignWeights(node.Right)
+	}
 }

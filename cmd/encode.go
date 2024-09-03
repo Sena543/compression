@@ -7,7 +7,7 @@ import (
 
 type HuffNode = Node
 
-func NewEncode(input string) map[string]int {
+func NewFrequencyMap(input string) map[string]int {
 	var result = make(map[string]int)
 	for _, val := range input {
 		result[string(val)] += 1
@@ -39,13 +39,80 @@ func (h *HuffNode) PrintTree(node *HuffNode, writer io.Writer) {
 	}
 
 	/* if node.Left == nil && node.Right == nil { */
-	fmt.Fprintf(writer, "%s : %d : %d \n", node.Data, node.Count, node.Weight)
+	/* fmt.Fprintf(writer, "%s : %d : %d \n", node.Data, node.Count, node.Weight) */
 	/* } */
 	h.PrintTree(node.Left, writer)
+	fmt.Fprintf(writer, "%s : %d : %s \n", node.Data, node.Count, node.Weight)
 	h.PrintTree(node.Right, writer)
 }
 
-func (h *HuffNode) AssignWeights(node *HuffNode) {
+func (h *HuffNode) VariableEncoding(node *HuffNode) {
+}
+
+/*
+	 func (h *HuffNode) getBinEncoding(node *HuffNode, frequencyMap map[string]int) {
+	}
+*/
+func (h *HuffNode) EncodeStringKey(node *HuffNode, data map[string]int) { //could be changed to a byte array
+	var encodeMap = make(map[string]string)
+	for key := range data {
+		var output string = ""
+		h.TraverseTree(node, key, &output, &encodeMap)
+
+	}
+	fmt.Println("encode map: ", encodeMap)
+
+}
+
+/* func (h *HuffNode) TraverseTree(node *HuffNode, variableCharacter string, output string) string { */
+/* 	if node == nil {
+   		return ""
+   	}
+
+   	// If the node is a leaf node and matches the variable character
+   	if node.Left == nil && node.Right == nil {
+   		if node.Data == variableCharacter {
+   			fmt.Println(node.Data, "res:", output)
+   			return output
+   		}
+   		return ""
+   	}
+
+   	// Traverse the left subtree
+   	leftOutput := h.TraverseTree(node.Left, variableCharacter, output+"0")
+   	if leftOutput != "" {
+   		return leftOutput
+   	}
+
+   	// Traverse the right subtree
+   	rightOutput := h.TraverseTree(node.Right, variableCharacter, output+"1")
+   	if rightOutput != "" {
+   		return rightOutput
+   	}
+
+   	// If neither left nor right subtree produced the result, return an empty string
+   	return ""
+} */
+func (h *HuffNode) TraverseTree(node *HuffNode, variableCharacter string, output *string, encoding *map[string]string) {
+
+	if node == nil {
+		return
+	}
+
+	if node.Data == variableCharacter && node.Left == nil && node.Right == nil {
+		(*encoding)[node.Data] = *output
+		fmt.Println(node.Data, "res:", *output)
+		return
+	}
+
+	*output += "0"
+	h.TraverseTree(node.Left, variableCharacter, output, encoding)
+	*output = (*output)[:len(*output)-1]
+
+	*output += "1"
+	h.TraverseTree(node.Right, variableCharacter, output, encoding)
+	*output = (*output)[:len(*output)-1]
+
 }
 
 func (h *HuffNode) AssignWeights(node *HuffNode) {
@@ -54,12 +121,14 @@ func (h *HuffNode) AssignWeights(node *HuffNode) {
 	}
 
 	if node.Left != nil {
-		node.Weight = 0
+		node.Weight = "0"
+		/* node.Weight = 0 */
 		h.AssignWeights(node.Left)
 	}
 
 	if node.Right != nil {
-		node.Weight = 1
+		node.Weight = "1"
+		/* node.Weight = 1 */
 		h.AssignWeights(node.Right)
 	}
 }

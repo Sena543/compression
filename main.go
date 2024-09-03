@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/Sena543/compression/cmd"
 )
@@ -10,7 +9,7 @@ import (
 func main() {
 	fmt.Println("Compression tool")
 	testString := "BCAADDDCCACACAC"
-	res := cmd.NewEncode(testString)
+	res := cmd.NewFrequencyMap(testString)
 	var pq cmd.PriorityQueue
 	for k, v := range res {
 		node := cmd.Node{Data: k, Count: v}
@@ -20,6 +19,8 @@ func main() {
 	rootNode := hTree.BuildTree(pq)
 	/* rootNode := hTree.BuildTree(pq.PQ(), 0) */
 	hTree.AssignWeights(rootNode)
-	hTree.PrintTree(rootNode, os.Stdout)
+	/* hTree.PrintTree(rootNode, os.Stdout) */
+
+	hTree.EncodeStringKey(rootNode, res)
 
 }

@@ -53,14 +53,25 @@ func (h *HuffNode) VariableEncoding(node *HuffNode) {
 	 func (h *HuffNode) getBinEncoding(node *HuffNode, frequencyMap map[string]int) {
 	}
 */
-func (h *HuffNode) EncodeStringKey(node *HuffNode, data map[string]int) { //could be changed to a byte array
+func (h *HuffNode) EncodeStringMap(node *HuffNode, data map[string]int) map[string]string { //could be changed to a byte array
 	var encodeMap = make(map[string]string)
 	for key := range data {
 		var output string = ""
 		h.TraverseTree(node, key, &output, &encodeMap)
 
 	}
-	fmt.Println("encode map: ", encodeMap)
+	return encodeMap
+
+}
+
+func (h *HuffNode) EncodeString(data string, encodeKey map[string]string) string { //could be changed to a byte array
+	var result string
+
+	for _, v := range data {
+		result += encodeKey[string(v)]
+	}
+
+	return result
 
 }
 
@@ -101,7 +112,7 @@ func (h *HuffNode) TraverseTree(node *HuffNode, variableCharacter string, output
 
 	if node.Data == variableCharacter && node.Left == nil && node.Right == nil {
 		(*encoding)[node.Data] = *output
-		fmt.Println(node.Data, "res:", *output)
+		/* fmt.Println(node.Data, "res:", *output) */
 		return
 	}
 

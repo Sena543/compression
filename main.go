@@ -21,6 +21,7 @@ func main() {
 	hTree.AssignWeights(rootNode)
 	/* hTree.PrintTree(rootNode, os.Stdout) */
 
-	hTree.EncodeStringKey(rootNode, res)
+	encodeRes := hTree.EncodeStringMap(rootNode, res)
+	fmt.Println("encoded string: ", hTree.EncodeString(testString, encodeRes), "mapEncoding: ", encodeRes)
 
 }

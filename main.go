@@ -8,6 +8,7 @@ import (
 
 func main() {
 	fmt.Println("Compression tool")
+	/* testString := "happy hip hop" */
 	testString := "BCAADDDCCACACAC"
 	res := cmd.NewFrequencyMap(testString)
 	var pq cmd.PriorityQueue
@@ -21,7 +22,9 @@ func main() {
 	hTree.AssignWeights(rootNode)
 	/* hTree.PrintTree(rootNode, os.Stdout) */
 
-	encodeRes := hTree.EncodeStringMap(rootNode, res)
-	fmt.Println("encoded string: ", hTree.EncodeString(testString, encodeRes), "mapEncoding: ", encodeRes)
+	encodeMapRes := hTree.EncodeStringMap(rootNode, res)
+	encodedStringRes := hTree.EncodeString(testString, encodeMapRes)
+	fmt.Println("encoded string: ", encodedStringRes, "mapEncoding: ", encodeMapRes)
+	fmt.Println(hTree.DecodeString(rootNode, encodedStringRes))
 
 }

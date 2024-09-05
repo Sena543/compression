@@ -75,6 +75,45 @@ func (h *HuffNode) EncodeString(data string, encodeKey map[string]string) string
 
 }
 
+func (h *HuffNode) DecodeString(node *HuffNode, encodedData string) string { //could be changed to a byte array
+	var result string
+	var pointer int
+
+	for pointer < len(encodedData) {
+		/* fmt.Println("this ran", pointer) */
+		result += h.decodeTraversal(node, &encodedData, &pointer)
+	}
+
+	return result
+}
+
+func (h *HuffNode) decodeTraversal(node *HuffNode, encodedData *string, pointer *int) string {
+	if node == nil {
+		return ""
+	}
+
+	if *pointer > len(*encodedData) {
+		return node.Data
+	}
+
+	if node.Left == nil && node.Right == nil {
+		return node.Data
+	}
+
+	if string((*encodedData)[*pointer]) == "0" {
+		*pointer++
+		return h.decodeTraversal(node.Left, encodedData, pointer)
+	}
+	/* 	else {
+
+	   		return h.decodeTraversal(node.Right, encodedData, &*pointer++)
+	   	}
+	*/
+	/* return node.Data */
+	*pointer++
+	return h.decodeTraversal(node.Right, encodedData, pointer)
+}
+
 /* func (h *HuffNode) TraverseTree(node *HuffNode, variableCharacter string, output string) string { */
 /* 	if node == nil {
    		return ""

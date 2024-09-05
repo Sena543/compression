@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"reflect"
 	"testing"
 
 	"github.com/Sena543/compression/cmd"
@@ -30,7 +31,7 @@ func TestEncoding(t *testing.T) {
 
 		for _, v := range testString {
 			want := map_Res[string(v)]
-			got := cmd.NewEncode(testString)[string(v)]
+			got := cmd.NewFrequencyMap(testString)[string(v)]
 			if want != got {
 				t.Errorf("Want %v but got %v", want, got)
 			}
@@ -64,4 +65,27 @@ func TestEncoding(t *testing.T) {
 			t.Errorf("Want %v but got %v", want, got)
 		}
 	}) */
+
+	t.Run("test encoding key results", func(t *testing.T) {
+		want := map[string]string{"A": "11", "B": "100", "C": "0", "D": "101"}
+		/* want := map[rune]string{"A": "11", "B": "100", "C": "0", "D": "101"} */
+		var pq cmd.PriorityQueue
+		res := cmd.NewFrequencyMap(testString)
+		for k, v := range res {
+			node := cmd.Node{Data: k, Count: v}
+			pq.Insert(node)
+		}
+		var hTree cmd.HuffNode
+		rootNode := hTree.BuildTree(pq)
+		/* rootNode := hTree.BuildTree(pq.PQ(), 0) */
+		hTree.AssignWeights(rootNode)
+		/* hTree.PrintTree(rootNode, os.Stdout) */
+
+		got := hTree.EncodeStringMap(rootNode, res)
+
+		if !reflect.DeepEqual(want, got) {
+			t.Errorf("want %v got %v", want, got)
+		}
+
+	})
 }
